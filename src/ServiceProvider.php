@@ -2,6 +2,7 @@
 
 namespace Waygou\XheetahInstaller;
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider

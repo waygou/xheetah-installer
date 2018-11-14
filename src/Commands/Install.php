@@ -4,8 +4,8 @@ namespace Waygou\XheetahInstaller\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class Install extends Command
 {
@@ -48,6 +48,7 @@ class Install extends Command
 
         if (!File::exists(app_path('Providers/NovaServiceProvider.php'))) {
             $this->info('Checking if Nova is installed ...');
+
             return $this->error('Looks like Laravel Nova is not installed on your system. Please try again.');
         }
 

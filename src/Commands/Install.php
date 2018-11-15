@@ -53,6 +53,7 @@ class Install extends Command
         }
 
         // Obtain Xheetah Nova Library.
+        $this->info('Importing waygou/xheetah-nova composer library (takes some minutes) ...');
         $this->commandExecute('composer require waygou/xheetah-nova');
     }
 
@@ -66,6 +67,7 @@ class Install extends Command
     protected function commandExecute($command)
     {
         $process = new Process($command);
+        $process->setTimeout(300);
         $process->run();
 
         // executes after the command finishes

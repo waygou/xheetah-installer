@@ -13,22 +13,23 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->registerCommands();
 
-        $this->overrideFiles();
+        $this->publishFiles();
     }
 
-    public function overrideFiles()
+    public function publishFiles()
     {
         $this->publishes([
             __DIR__.'/../config/database.php.stub' => config_path('database.php'),
             __DIR__.'/../config/app.php.stub'      => config_path('app.php'),
             __DIR__.'/../.env.stub'                => base_path('.env'),
-        ], 'waygou-xheetah-installer-overrides');
+        ], 'waygou-xheetah-installer-init');
     }
 
     protected function registerCommands()
     {
         $this->commands([
             \Waygou\XheetahInstaller\Commands\Install::class,
+            \Waygou\XheetahInstaller\Commands\Init::class,
         ]);
     }
 

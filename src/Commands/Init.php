@@ -7,21 +7,21 @@ use Illuminate\Support\Facades\File;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class Install extends Command
+class Init extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'xheetah:install';
+    protected $signature = 'xheetah:init';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Installs Xheetah for the first time in a new server.';
+    protected $description = 'Installs Xheetah pre-requirements for the hyn/multi-tenant package installation.';
 
     /**
      * Create a new command instance.
@@ -41,9 +41,9 @@ class Install extends Command
     public function handle()
     {
         $this->lineSpace();
-        $this->info('----------------------------');
-        $this->info('--- Xheetah installation ---');
-        $this->info('----------------------------');
+        $this->info('---------------------------------------------');
+        $this->info('--- Xheetah Pre-requirements installation ---');
+        $this->info('---------------------------------------------');
         $this->lineSpace();
 
         if (!File::exists(app_path('Providers/NovaServiceProvider.php'))) {
@@ -52,8 +52,8 @@ class Install extends Command
             return $this->error('Looks like Laravel Nova is not installed on your system. Please try again.');
         }
 
-        // Obtain Xheetah Nova Library.
-        $this->commandExecute('composer require waygou/xheetah-nova');
+        $this->info('Publishing file dependencies for the hyn/multi-tenant library ...');
+        $this->commandExecute('php artisan vendor:publish --tag=waygou-xheetah-installer-init --force');
     }
 
     private function lineSpace($num = 3)

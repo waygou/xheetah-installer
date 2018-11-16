@@ -165,14 +165,7 @@ return [
         /*
          * Package Service Providers...
          */
-        Waygou\Helpers\ServiceProvider::class,
-        Waygou\MultiTenant\ServiceProvider::class,
         App\Providers\NovaServiceProvider::class,
-        Waygou\Xheetah\ServiceProvider::class,
-        Waygou\Surveyor\ServiceProvider::class,
-        Waygou\XheetahNova\ToolServiceProvider::class,
-        Waygou\SurveyorNova\ToolServiceProvider::class,
-        //Waygou\NovaUx\ServiceProvider::class,
 
         /*
          * Application Service Providers...

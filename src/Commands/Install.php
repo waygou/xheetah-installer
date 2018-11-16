@@ -55,6 +55,30 @@ class Install extends Command
         // Obtain Xheetah Nova Library.
         $this->info('Importing waygou/xheetah-nova composer library (takes some minutes) ...');
         $this->commandExecute('composer require waygou/xheetah-nova');
+
+        $this->info('Publishing all Laravel Nova files ...');
+        $this->commandExecute('php artisan vendor:publish --provider=Laravel\Nova\NovaServiceProvider --force');
+
+        $this->info('Publishing Hyn/multi-tenant tenancy tag ...');
+        $this->commandExecute('php artisan vendor:publish --tag=tenancy --force');
+
+        $this->info('Publishing Waygou Surveyor files ...');
+        $this->commandExecute('php artisan vendor:publish --provider=Waygou\Surveyor\ServiceProvider --force');
+
+        $this->info('Publishing Waygou Surveyor Nova files ...');
+        $this->commandExecute('php artisan vendor:publish --provider=Waygou\SurveyorNova\ToolServiceProvider --force');
+
+        $this->info('Publishing Waygou Xheetah files ...');
+        $this->commandExecute('php artisan vendor:publish --provider=Waygou\Xheetah\ServiceProvider --force');
+
+        $this->info('Publishing Waygou Xheetah Nova files ...');
+        $this->commandExecute('php artisan vendor:publish --provider=Waygou\XheetahNova\ToolServiceProvider --force');
+
+        $this->info('Running composer dumpautoload ...');
+        $this->commandExecute('composer dumpautoload');
+
+        $this->info('Running migration fresh ...');
+        $this->commandExecute('php artisan migrate:fresh');
     }
 
     private function lineSpace($num = 3)

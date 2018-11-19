@@ -74,6 +74,12 @@ class Install extends Command
         $this->info('Publishing Waygou Xheetah Nova files ...');
         $this->commandExecute('php artisan vendor:publish --provider=Waygou\XheetahNova\ToolServiceProvider --force');
 
+        $this->info('Copying migrations folder to tenant folder ...');
+        $files = Storage::files(database_path('migrations'));
+        foreach ($files as $file) {
+            Storage::copy($file, database_path('migrations/tenant'));
+        }
+
         $this->info('Running composer dumpautoload ...');
         $this->commandExecute('composer dumpautoload');
 

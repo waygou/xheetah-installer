@@ -2,6 +2,7 @@
 
 namespace Waygou\XheetahInstaller\Commands;
 
+use PHLAK\Twine\Str;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Process\Process;
@@ -55,7 +56,7 @@ class Install extends Command
 
         // Obtain Xheetah Nova Library.
         $this->info('Importing waygou/xheetah-nova composer library (takes some minutes) ...');
-        $this->commandExecute('composer require waygou/xheetah-nova');
+        //$this->commandExecute('composer require waygou/xheetah-nova');
 
         $this->info('Publishing all Laravel Nova files ...');
         $this->commandExecute('php artisan vendor:publish --provider=Laravel\Nova\NovaServiceProvider --force');
@@ -76,10 +77,27 @@ class Install extends Command
         $this->commandExecute('php artisan vendor:publish --provider=Waygou\XheetahNova\ToolServiceProvider --force');
 
         $this->info('Copying migrations folder to tenant folder ...');
-        $files = Storage::files(database_path('migrations'));
-        foreach ($files as $file) {
-            Storage::copy($file, database_path('migrations/tenant'));
-        }
+        $files = collect(glob(
+            database_path('migrations/*')
+        ));
+
+        // Filter the specific migration files that should be copied to the
+        // migrations/tenant folder.
+        $tenantMigrationFiles = $files->filter(function ($value, $key) {
+            $file = new Str($value);
+            return $file->contains('_create_users') ||
+                   $file->contains('_password_resets') ||
+                   $file->contains('_action_events') ||
+                   $file->contains('_surveyor') ||
+                   $file->contains('_xheetah');
+        });
+
+        File::makeDirectory(database_path('migrations/tenant'));
+
+        // Copy all the files to the tenant directory.
+        $tenantMigrationFiles->each(function ($value) {
+            File::copy($value, database_path('migrations/tenant/' . basename($value)));
+        });
 
         $this->info('Running composer dumpautoload ...');
         $this->commandExecute('composer dumpautoload');

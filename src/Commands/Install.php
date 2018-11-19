@@ -2,10 +2,9 @@
 
 namespace Waygou\XheetahInstaller\Commands;
 
-use PHLAK\Twine\Str;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
+use PHLAK\Twine\Str;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -85,6 +84,7 @@ class Install extends Command
         // migrations/tenant folder.
         $tenantMigrationFiles = $files->filter(function ($value, $key) {
             $file = new Str($value);
+
             return $file->contains('_create_users') ||
                    $file->contains('_password_resets') ||
                    $file->contains('_action_events') ||
@@ -96,7 +96,7 @@ class Install extends Command
 
         // Copy all the files to the tenant directory.
         $tenantMigrationFiles->each(function ($value) {
-            File::copy($value, database_path('migrations/tenant/' . basename($value)));
+            File::copy($value, database_path('migrations/tenant/'.basename($value)));
         });
 
         $this->info('Running composer dumpautoload ...');

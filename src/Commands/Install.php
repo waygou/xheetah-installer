@@ -4,6 +4,7 @@ namespace Waygou\XheetahInstaller\Commands;
 
 use PHLAK\Twine\Str;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Process\Process;
 use Waygou\MultiTenant\Services\TenantProvision;
@@ -117,8 +118,16 @@ class Install extends Command
         $this->info('Running migration fresh on system database ...');
         $this->commandExecute('php artisan migrate:fresh');
 
-        $this->info('Creating the pilot tenant for testing purposes ...');
-        TenantProvision::createTenant('pilot', true, false);
+        // Configure seeder for the new tenant.
+        TenantProvision::configureSeeder(Waygou\Xheetah\Seeders\InstallSeeder::class);
+
+        $this->info("Creating the 'tests' tenant  ...");
+        // What environment are we? Should use auto db, https?
+        if (App::environment('local')) {
+            TenantProvision::createTenant('pilot', true, false);
+        } else {
+            TenantProvision::createTenant('pilot', false, true);
+        }
     }
 
     private function lineSpace($num = 3)

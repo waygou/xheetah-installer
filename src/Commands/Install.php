@@ -2,13 +2,15 @@
 
 namespace Waygou\XheetahInstaller\Commands;
 
+use PHLAK\Twine\Str;
 use Illuminate\Console\Command;
+use Waygou\Xheetah\Models\User;
+use Waygou\Xheetah\Models\Client;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
-use PHLAK\Twine\Str;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Waygou\MultiTenant\Services\TenantProvision;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class Install extends Command
 {
@@ -119,16 +121,38 @@ class Install extends Command
         $this->info('Running migration fresh on system database ...');
         $this->commandExecute('php artisan migrate:fresh');
 
-        // Configure seeder for the new tenant.
-        TenantProvision::configureSeeder(Waygou\Xheetah\Seeders\InstallSeeder::class);
-
-        $this->info("Creating the 'genesys' tenant + initial data seed  ...");
+        $this->info("Creating the 'genesys' tenant ...");
         // What environment are we? Should use auto db, https?
         if (App::environment('local')) {
-            TenantProvision::createTenant('genesys', true, false);
+            $website = TenantProvision::createTenant('genesys', true, false);
         } else {
-            TenantProvision::createTenant('genesys', false, true);
+            $website = TenantProvision::createTenant('genesys', false, true);
         }
+
+        $this->info("Seeding the genesys tenant with the schema creation seeder ...");
+        $this->commandExecute('php artisan tenancy:db:seed --class=Waygou\Xheetah\Seeders\InstallSeeder --website_id=' . $website->id);
+
+        /**
+         * Install a super admin in the new tenant.
+         * 1. Create the client 'Genesys'.
+         * 2. Create the user associated to client, main role code=super admin.
+         * 3. Associate a Surveyor profile
+         */
+
+        Client::saveMany([
+            ['name' => 'Genesys']
+        ]);
+
+        User::saveMany([
+            ['name'         => 'Super Admin',
+             'email'        => 'superadmin@genesys.com',
+             'password'     => bcrypt('honda'),
+             'phone'        => '+418765411',
+             'client_id'    => 1,
+             'main_role_id' => MainRole::where('code', 'super-admin')->first()->id, ],
+        ])->each(function ($user) {
+            $user->profiles()->attach(Profile::where('code', 'super-admin')->first()->id);
+        });
     }
 
     private function lineSpace($num = 3)

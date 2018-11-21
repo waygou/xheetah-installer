@@ -2,11 +2,12 @@
 
 namespace Waygou\XheetahInstaller\Commands;
 
+use PHLAK\Twine\Str;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use PHLAK\Twine\Str;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
+use Waygou\MultiTenant\Services\TenantProvision;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class Install extends Command
 {
@@ -99,11 +100,25 @@ class Install extends Command
             File::copy($value, database_path('migrations/tenant/'.basename($value)));
         });
 
+        // Delete migration files that are not needed in the database/migrations.
+        $this->info('Deleting migration files that are no longer needed in the database/migrations folder ...');
+        $migrationFilesToDelete = $files->filter(function ($value, $key) {
+            $file = new Str($value);
+            return $file->contains('_xheetah');
+        });
+
+        $migrationFilesToDelete->each(function ($value) {
+            File::delete($value);
+        });
+
         $this->info('Running composer dumpautoload ...');
         $this->commandExecute('composer dumpautoload');
 
-        $this->info('Running migration fresh ...');
+        $this->info('Running migration fresh on system database ...');
         $this->commandExecute('php artisan migrate:fresh');
+
+        $this->info('Creating the pilot tenant for testing purposes ...');
+        TenantProvision::createTenant('pilot', true, false);
     }
 
     private function lineSpace($num = 3)

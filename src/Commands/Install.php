@@ -2,12 +2,12 @@
 
 namespace Waygou\XheetahInstaller\Commands;
 
-use PHLAK\Twine\Str;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use PHLAK\Twine\Str;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Waygou\MultiTenant\Services\TenantProvision;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class Install extends Command
 {
@@ -104,6 +104,7 @@ class Install extends Command
         $this->info('Deleting migration files that are no longer needed in the database/migrations folder ...');
         $migrationFilesToDelete = $files->filter(function ($value, $key) {
             $file = new Str($value);
+
             return $file->contains('_xheetah');
         });
 

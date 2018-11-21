@@ -122,12 +122,12 @@ class Install extends Command
         // Configure seeder for the new tenant.
         TenantProvision::configureSeeder(Waygou\Xheetah\Seeders\InstallSeeder::class);
 
-        $this->info("Creating the 'tests' tenant  ...");
+        $this->info("Creating the 'genesys' tenant + initial data seed  ...");
         // What environment are we? Should use auto db, https?
         if (App::environment('local')) {
-            TenantProvision::createTenant('pilot', true, false);
+            TenantProvision::createTenant('genesys', true, false);
         } else {
-            TenantProvision::createTenant('pilot', false, true);
+            TenantProvision::createTenant('genesys', false, true);
         }
     }
 

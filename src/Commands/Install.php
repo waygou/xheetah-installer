@@ -2,18 +2,18 @@
 
 namespace Waygou\XheetahInstaller\Commands;
 
-use PHLAK\Twine\Str;
 use Hyn\Tenancy\Environment;
 use Illuminate\Console\Command;
-use Waygou\Xheetah\Models\User;
-use Waygou\Xheetah\Models\Client;
 use Illuminate\Support\Facades\App;
-use Waygou\Surveyor\Models\Profile;
-use Waygou\Xheetah\Models\MainRole;
 use Illuminate\Support\Facades\File;
+use PHLAK\Twine\Str;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Waygou\MultiTenant\Services\TenantProvision;
-use Symfony\Component\Process\Exception\ProcessFailedException;
+use Waygou\Surveyor\Models\Profile;
+use Waygou\Xheetah\Models\Client;
+use Waygou\Xheetah\Models\MainRole;
+use Waygou\Xheetah\Models\User;
 
 class Install extends Command
 {

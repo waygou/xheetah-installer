@@ -24,6 +24,10 @@ class ServiceProvider extends BaseServiceProvider
             __DIR__.'/../config/app.php.stub'      => config_path('app.php'),
             __DIR__.'/../.env.stub'                => base_path('.env'),
         ], 'waygou-xheetah-installer-init');
+
+        $this->publishes([
+            __DIR__.'/../others/Kernel.php.stub' => app_path('Http/Kernel.php'),
+        ], 'waygou-xheetah-installer-kernel-override');
     }
 
     protected function registerCommands()

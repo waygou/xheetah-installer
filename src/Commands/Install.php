@@ -2,15 +2,18 @@
 
 namespace Waygou\XheetahInstaller\Commands;
 
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\File;
 use PHLAK\Twine\Str;
-use Symfony\Component\Process\Exception\ProcessFailedException;
+use Hyn\Tenancy\Environment;
+use Illuminate\Console\Command;
+use Waygou\Xheetah\Models\User;
+use Waygou\Xheetah\Models\Client;
+use Illuminate\Support\Facades\App;
+use Waygou\Surveyor\Models\Profile;
+use Waygou\Xheetah\Models\MainRole;
+use Illuminate\Support\Facades\File;
 use Symfony\Component\Process\Process;
 use Waygou\MultiTenant\Services\TenantProvision;
-use Waygou\Xheetah\Models\Client;
-use Waygou\Xheetah\Models\User;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class Install extends Command
 {
@@ -129,6 +132,10 @@ class Install extends Command
             $website = TenantProvision::createTenant('genesys', false, true);
         }
 
+        // Change default hyn environment to the genesys tenant.
+        $environment = app()->make(\Hyn\Tenancy\Environment::class);
+        $environment->tenant($website);
+
         $this->info('Seeding the genesys tenant with the schema creation seeder ...');
         $this->commandExecute('php artisan tenancy:db:seed --class=Waygou\Xheetah\Seeders\InstallSeeder --website_id='.$website->id);
 
@@ -153,6 +160,9 @@ class Install extends Command
         ])->each(function ($user) {
             $user->profiles()->attach(Profile::where('code', 'super-admin')->first()->id);
         });
+
+        $this->info('Overriding Kernel.php to install the new tenany.enforce middleware ...');
+        $this->commandExecute('php artisan vendor:publish --tag=waygou-xheetah-installer-kernel-override --force');
     }
 
     private function lineSpace($num = 3)

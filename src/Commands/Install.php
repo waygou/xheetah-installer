@@ -118,6 +118,7 @@ class Install extends Command
         $this->info('Deleting migration files that are no longer needed in the database/migrations folder ...');
         $migrationFilesToDelete = $files->filter(function ($value, $key) {
             $file = new Str($value);
+
             return $file->contains('_xheetah_schema');
         });
 

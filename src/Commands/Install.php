@@ -144,10 +144,10 @@ class Install extends Command
 
         // What environment are we? Should use auto db, https?
         if (App::environment('local')) {
-            $this->info("Automatically creating database ...");
+            $this->info('Automatically creating database ...');
             $website = TenantProvision::createTenant('genesys', true, false);
         } else {
-            $this->info("Manually creating database ...");
+            $this->info('Manually creating database ...');
             $website = TenantProvision::createTenant('genesys', false, true);
         }
 

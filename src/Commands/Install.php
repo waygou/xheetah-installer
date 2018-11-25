@@ -79,22 +79,22 @@ class Install extends Command
         $this->commandExecute('php artisan vendor:publish --tag=xheetah-utils-resources --force');
 
         $this->info('Publishing all Laravel Nova files ...');
-        $this->commandExecute('php artisan vendor:publish --provider=Laravel\Nova\NovaServiceProvider --force');
+        $this->commandExecute('php artisan vendor:publish --provider="Laravel\Nova\NovaServiceProvider" --force');
 
         $this->info('Publishing Hyn/multi-tenant tenancy tag ...');
         $this->commandExecute('php artisan vendor:publish --tag=tenancy --force');
 
         $this->info('Publishing Waygou Surveyor files ...');
-        $this->commandExecute('php artisan vendor:publish --provider=Waygou\Surveyor\ServiceProvider --force');
+        $this->commandExecute('php artisan vendor:publish --provider="Waygou\Surveyor\ServiceProvider" --force');
 
         $this->info('Publishing Waygou Surveyor Nova files ...');
-        $this->commandExecute('php artisan vendor:publish --provider=Waygou\SurveyorNova\ToolServiceProvider --force');
+        $this->commandExecute('php artisan vendor:publish --provider="Waygou\SurveyorNova\ToolServiceProvider" --force');
 
         $this->info('Publishing Waygou Xheetah files ...');
-        $this->commandExecute('php artisan vendor:publish --provider=Waygou\Xheetah\ServiceProvider --force');
+        $this->commandExecute('php artisan vendor:publish --provider="Waygou\Xheetah\ServiceProvider" --force');
 
         $this->info('Publishing Waygou Xheetah Nova files ...');
-        $this->commandExecute('php artisan vendor:publish --provider=Waygou\XheetahNova\ToolServiceProvider --force');
+        $this->commandExecute('php artisan vendor:publish --provider="Waygou\XheetahNova\ToolServiceProvider" --force');
 
         $this->info('Copying migrations folder to tenant folder ...');
         $files = collect(glob(
@@ -156,7 +156,7 @@ class Install extends Command
         $environment->tenant($website);
 
         $this->info('Seeding the genesys tenant with the schema creation seeder ...');
-        $this->commandExecute('php artisan tenancy:db:seed --class=Waygou\Xheetah\Seeders\InstallSeeder --website_id='.$website->id);
+        //$this->commandExecute('php artisan tenancy:db:seed --class="Waygou\Xheetah\Seeders\InstallSeeder" --website_id='.$website->id);
 
         /*
          * Install a super admin in the new tenant.

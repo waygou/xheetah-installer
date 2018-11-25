@@ -66,6 +66,9 @@ class Install extends Command
             $this->commandExecute('composer require waygou/xheetah-nova');
         }
 
+        $this->info('Publishing Hyn/multi-tenant tenancy tag ...');
+        $this->commandExecute('php artisan vendor:publish --tag=tenancy --force');
+
         $this->info('Publishing xheetah/multi-tenant overrides ...');
         $this->commandExecute('php artisan vendor:publish --tag=waygou-multi-tenant-overrides --force');
 
@@ -80,9 +83,6 @@ class Install extends Command
 
         $this->info('Publishing all Laravel Nova files ...');
         $this->commandExecute('php artisan vendor:publish --provider="Laravel\Nova\NovaServiceProvider" --force');
-
-        $this->info('Publishing Hyn/multi-tenant tenancy tag ...');
-        $this->commandExecute('php artisan vendor:publish --tag=tenancy --force');
 
         $this->info('Publishing Waygou Surveyor files ...');
         $this->commandExecute('php artisan vendor:publish --provider="Waygou\Surveyor\ServiceProvider" --force');

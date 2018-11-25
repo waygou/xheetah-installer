@@ -70,6 +70,9 @@ class Install extends Command
         $this->info('Publishing xheetah/utils migration file ...');
         $this->commandExecute('php artisan vendor:publish --tag=xheetah-utils-create-schema --force');
 
+        $this->info('Publishing xheetah/utils resource files ...');
+        $this->commandExecute('php artisan vendor:publish --tag=xheetah-utils-resources --force');
+
         $this->info('Publishing all Laravel Nova files ...');
         $this->commandExecute('php artisan vendor:publish --provider=Laravel\Nova\NovaServiceProvider --force');
 
@@ -102,7 +105,7 @@ class Install extends Command
                    $file->contains('_password_resets') ||
                    $file->contains('_action_events') ||
                    $file->contains('_surveyor') ||
-                   $file->contains('_xheetah_');
+                   $file->contains('_xheetah_s');
         });
 
         File::makeDirectory(database_path('migrations/tenant'));

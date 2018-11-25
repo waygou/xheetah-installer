@@ -62,7 +62,7 @@ class Install extends Command
 
         // Obtain Xheetah Nova Library. -- It will install all necessary libraries.
         $this->info('Importing waygou/xheetah-nova composer library (takes some minutes) ...');
-        if (App::environment('local')) {
+        if (!App::environment('local')) {
             $this->commandExecute('composer require waygou/xheetah-nova');
         }
 

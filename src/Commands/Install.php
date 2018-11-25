@@ -177,8 +177,14 @@ class Install extends Command
             $user->profiles()->attach(Profile::where('code', 'super-admin')->first()->id);
         });
 
+        /*
         $this->info('Overriding Kernel.php to install the new tenany.enforce middleware ...');
         $this->commandExecute('php artisan vendor:publish --tag=waygou-xheetah-installer-kernel-override --force');
+        */
+
+        $this->lineSpace();
+        $this->info('All done!!!');
+        $this->lineSpace();
     }
 
     private function lineSpace($num = 3)

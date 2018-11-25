@@ -22,7 +22,7 @@ class Install extends Command
      *
      * @var string
      */
-    protected $signature = 'xheetah:install';
+    protected $signature = 'xheetah:install {--noupdate : Composer update will not run. }';
 
     /**
      * The console command description.
@@ -62,7 +62,7 @@ class Install extends Command
 
         // Obtain Xheetah Nova Library. -- It will install all necessary libraries.
         $this->info('Importing waygou/xheetah-nova composer library (takes some minutes) ...');
-        if (!App::environment('local')) {
+        if (!$this->option('noupdate')) {
             $this->commandExecute('composer require waygou/xheetah-nova');
         }
 
@@ -141,10 +141,13 @@ class Install extends Command
         $this->commandExecute('php artisan migrate:fresh');
 
         $this->info("Creating the 'genesys' tenant ...");
+
         // What environment are we? Should use auto db, https?
         if (App::environment('local')) {
+            $this->info("Automatically creating database ...");
             $website = TenantProvision::createTenant('genesys', true, false);
         } else {
+            $this->info("Manually creating database ...");
             $website = TenantProvision::createTenant('genesys', false, true);
         }
 

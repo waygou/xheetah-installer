@@ -70,9 +70,6 @@ class Install extends Command
         $this->info('Publishing xheetah/utils migration file ...');
         $this->commandExecute('php artisan vendor:publish --tag=xheetah-utils-create-schema --force');
 
-        $this->info('Running migrations FRESH (installs users, password resets and xheetah utils schema) ...');
-        $this->commandExecute('php artisan migrate:fresh');
-
         $this->info('Publishing all Laravel Nova files ...');
         $this->commandExecute('php artisan vendor:publish --provider=Laravel\Nova\NovaServiceProvider --force');
 
@@ -132,7 +129,7 @@ class Install extends Command
         $this->info('Running composer dumpautoload ...');
         $this->commandExecute('composer dumpautoload');
 
-        $this->info('Running migration fresh on system database ...');
+        $this->info('Running migrations FRESH (installs users, password resets and xheetah utils schema) ...');
         $this->commandExecute('php artisan migrate:fresh');
 
         $this->info("Creating the 'genesys' tenant ...");

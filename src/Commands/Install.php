@@ -60,9 +60,18 @@ class Install extends Command
             return $this->error('Looks like Laravel Nova is not installed on your system. Please try again.');
         }
 
-        // Obtain Xheetah Nova Library.
+        // Obtain Xheetah Nova Library. -- It will install all necessary libraries.
         $this->info('Importing waygou/xheetah-nova composer library (takes some minutes) ...');
-        //$this->commandExecute('composer require waygou/xheetah-nova');
+        $this->commandExecute('composer require waygou/xheetah-nova');
+
+        $this->info('Publishing xheetah/utils resources ...');
+        $this->commandExecute('php artisan vendor:publish --tag=xheetah-utils-resources --force');
+
+        $this->info('Publishing xheetah/utils migration file ...');
+        $this->commandExecute('php artisan vendor:publish --tag=xheetah-utils-create-schema --force');
+
+        $this->info('Running migrations FRESH (installs users, password resets and xheetah utils schema) ...');
+        $this->commandExecute('php artisan migrate:fresh');
 
         $this->info('Publishing all Laravel Nova files ...');
         $this->commandExecute('php artisan vendor:publish --provider=Laravel\Nova\NovaServiceProvider --force');
@@ -102,9 +111,11 @@ class Install extends Command
         File::makeDirectory(database_path('migrations/tenant'));
 
         // Copy all the files to the tenant directory.
-        $tenantMigrationFiles->each(function ($value) {
-            File::copy($value, database_path('migrations/tenant/'.basename($value)));
-        });
+        $tenantMigrationFiles->each(
+            function ($value) {
+                File::copy($value, database_path('migrations/tenant/'.basename($value)));
+            }
+        );
 
         // Delete migration files that are not needed in the database/migrations.
         $this->info('Deleting migration files that are no longer needed in the database/migrations folder ...');

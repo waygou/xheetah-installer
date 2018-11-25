@@ -62,7 +62,12 @@ class Install extends Command
 
         // Obtain Xheetah Nova Library. -- It will install all necessary libraries.
         $this->info('Importing waygou/xheetah-nova composer library (takes some minutes) ...');
-        $this->commandExecute('composer require waygou/xheetah-nova');
+        if (App::environment('local')) {
+            $this->commandExecute('composer require waygou/xheetah-nova');
+        }
+
+        $this->info('Publishing xheetah/multi-tenant overrides ...');
+        $this->commandExecute('php artisan vendor:publish --tag=waygou-multi-tenant-overrides --force');
 
         $this->info('Publishing xheetah/utils resources ...');
         $this->commandExecute('php artisan vendor:publish --tag=xheetah-utils-resources --force');
@@ -132,7 +137,7 @@ class Install extends Command
         $this->info('Running composer dumpautoload ...');
         $this->commandExecute('composer dumpautoload');
 
-        $this->info('Running migrations FRESH (installs users, password resets and xheetah utils schema) ...');
+        $this->info('Running migrations FRESH (installs users, surveyor, password resets and xheetah utils schema) ...');
         $this->commandExecute('php artisan migrate:fresh');
 
         $this->info("Creating the 'genesys' tenant ...");

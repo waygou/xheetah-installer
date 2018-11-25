@@ -21,9 +21,9 @@ class ServiceProvider extends BaseServiceProvider
         $this->publishes([
             __DIR__.'/../config/database.php.stub' => config_path('database.php'),
             //__DIR__.'/../config/tenancy.php.stub'  => config_path('tenancy.php'),
-            __DIR__.'/../config/app.php.stub'      => config_path('app.php'),
+            __DIR__.'/../config/app.php.stub'                       => config_path('app.php'),
             __DIR__.'/../app/Providers/AppServiceProvider.php.stub' => app_path('Providers/AppServiceProvider.php'),
-            __DIR__.'/../.env.stub'                => base_path('.env'),
+            __DIR__.'/../.env.stub'                                 => base_path('.env'),
         ], 'waygou-xheetah-installer-init');
 
         $this->publishes([

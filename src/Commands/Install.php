@@ -2,18 +2,18 @@
 
 namespace Waygou\XheetahInstaller\Commands;
 
+use PHLAK\Twine\Str;
 use Hyn\Tenancy\Environment;
 use Illuminate\Console\Command;
+use Waygou\Xheetah\Models\User;
+use Waygou\Xheetah\Models\Client;
 use Illuminate\Support\Facades\App;
+use Waygou\Surveyor\Models\Profile;
+use Waygou\Xheetah\Models\MainRole;
 use Illuminate\Support\Facades\File;
-use PHLAK\Twine\Str;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Waygou\MultiTenant\Services\TenantProvision;
-use Waygou\Surveyor\Models\Profile;
-use Waygou\Xheetah\Models\Client;
-use Waygou\Xheetah\Models\MainRole;
-use Waygou\Xheetah\Models\User;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class Install extends Command
 {
@@ -54,7 +54,7 @@ class Install extends Command
         $this->info('----------------------------');
         $this->lineSpace();
 
-        if (!File::exists(app_path('Providers/NovaServiceProvider.php'))) {
+        if (! File::exists(app_path('Providers/NovaServiceProvider.php'))) {
             $this->info('Checking if Nova is installed ...');
 
             return $this->error('Looks like Laravel Nova is not installed on your system. Please try again.');
@@ -62,7 +62,7 @@ class Install extends Command
 
         // Obtain Xheetah Nova Library. -- It will install all necessary libraries.
         $this->info('Importing waygou/xheetah-nova composer library (takes some minutes) ...');
-        if (!$this->option('noupdate')) {
+        if (! $this->option('noupdate')) {
             $this->commandExecute('composer require waygou/xheetah-nova');
         }
 
@@ -204,7 +204,7 @@ class Install extends Command
         $process->run();
 
         // executes after the command finishes
-        if (!$process->isSuccessful()) {
+        if (! $process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
 

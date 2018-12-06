@@ -170,7 +170,7 @@ class Install extends Command
              'contract_start' => '2018-01-01',
              'contact_name' => 'Bruno Falcao',
              'contact_email' => 'bruno.falcao@live.com',
-             'is_active' => true],
+             'is_active' => true, ],
         ]);
 
         $this->info('Creating super admin user (superadmin@genesys.com) ...');
@@ -186,7 +186,7 @@ class Install extends Command
         });
 
         $this->lineSpace();
-        $this->info('All done! You can test it on ' . config('app.url') . '/nova');
+        $this->info('All done! You can test it on '.config('app.url').'/nova');
         $this->lineSpace();
     }
 

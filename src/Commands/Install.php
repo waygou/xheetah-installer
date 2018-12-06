@@ -152,23 +152,28 @@ class Install extends Command
         }
 
         // Change default hyn environment to the genesys tenant.
-        $environment = app()->make(\Hyn\Tenancy\Environment::class);
-        $environment->tenant($website);
+        $this->info('Switching to Tenant database ...');
 
-        $this->info('Seeding the genesys tenant with the schema creation seeder ...');
-        //$this->commandExecute('php artisan tenancy:db:seed --class="Waygou\Xheetah\Seeders\InstallSeeder" --website_id='.$website->id);
+        $tenancy = app(Environment::class);
+        $tenancy->tenant($website);
 
         /*
          * Install a super admin in the new tenant.
          * 1. Create the client 'Genesys'.
          * 2. Create the user associated to client, main role code=super admin.
-         * 3. Associate a Surveyor profile
+         * 3. Associate a Surveyor profile.
          */
-
+        $this->info('Creating Genesys client (for testing purposes) ...');
         Client::saveMany([
-            ['name' => 'Genesys'],
+            ['name' => 'Genesys',
+             'social_name' => 'Genesys',
+             'contract_start' => '2018-01-01',
+             'contact_name' => 'Bruno Falcao',
+             'contact_email' => 'bruno.falcao@live.com',
+             'is_active' => true],
         ]);
 
+        $this->info('Creating super admin user (superadmin@genesys.com) ...');
         User::saveMany([
             ['name'         => 'Super Admin',
              'email'        => 'superadmin@genesys.com',
@@ -180,13 +185,8 @@ class Install extends Command
             $user->profiles()->attach(Profile::where('code', 'super-admin')->first()->id);
         });
 
-        /*
-        $this->info('Overriding Kernel.php to install the new tenany.enforce middleware ...');
-        $this->commandExecute('php artisan vendor:publish --tag=waygou-xheetah-installer-kernel-override --force');
-        */
-
         $this->lineSpace();
-        $this->info('All done!!!');
+        $this->info('All done! You can test it on ' . config('app.url') . '/nova');
         $this->lineSpace();
     }
 
